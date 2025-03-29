@@ -1,5 +1,5 @@
 [project]
-name = "postgres-sql"
+name = "api-postgres-sql"
 version = "0.1.0"
 description = "api interface of postgres"
 authors = [
