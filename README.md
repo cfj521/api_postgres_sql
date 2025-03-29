@@ -2,13 +2,6 @@
 
 这是一个使用FastAPI和SQLAlchemy构建的PostgreSQL数据库操作API。
 
-## 功能特点
-
-- 完整的CRUD操作
-- 使用SQLAlchemy ORM
-- 自动API文档
-- 环境变量配置
-- 类型提示和验证
 
 ## 安装步骤
 
@@ -35,11 +28,8 @@ uvicorn main:app --reload
 
 ## API端点
 
-- POST /users/ - 创建新用户
-- GET /users/ - 获取用户列表
-- GET /users/{user_id} - 获取特定用户
-- PUT /users/{user_id} - 更新用户
-- DELETE /users/{user_id} - 删除用户
+- GET /sql?query=加密的查询语句    -执行客户端sql语句，返回执行结果
+
 
 ## 部署到Ubuntu服务器
 
