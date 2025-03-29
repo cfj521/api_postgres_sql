@@ -13,18 +13,12 @@
 ## 安装步骤
 
 1. 克隆项目到本地
-2. 创建虚拟环境：
+2. 项目运行环境管理，需要安装好pyenv，poetry
+3. 创建并配置好虚拟环境：
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # 或
-   .\venv\Scripts\activate  # Windows
-   ```
-3. 安装依赖：
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. 创建`.env`文件并配置数据库连接信息：
+   poetry install --no-dev
+
+4. 复制`cp .env.example .env`文件并配置数据库连接信息：
    ```
    POSTGRES_USER=your_username
    POSTGRES_PASSWORD=your_password
@@ -39,8 +33,6 @@
 uvicorn main:app --reload
 ```
 
-访问 http://localhost:8000/docs 查看API文档
-
 ## API端点
 
 - POST /users/ - 创建新用户
@@ -51,21 +43,7 @@ uvicorn main:app --reload
 
 ## 部署到Ubuntu服务器
 
-1. 在服务器上安装必要的包：
-   ```bash
-   sudo apt update
-   sudo apt install python3-venv postgresql postgresql-contrib
-   ```
-
-2. 配置PostgreSQL：
-   ```bash
-   sudo -u postgres psql
-   CREATE DATABASE your_database;
-   CREATE USER your_username WITH PASSWORD 'your_password';
-   GRANT ALL PRIVILEGES ON DATABASE your_database TO your_username;
-   ```
-
-3. 使用systemd服务运行应用：
+1. 使用systemd服务运行应用：
    ```bash
    sudo nano /etc/systemd/system/postgres-api.service
    ```
@@ -77,44 +55,18 @@ uvicorn main:app --reload
    After=network.target
 
    [Service]
-   User=your_username
-   WorkingDirectory=/path/to/your/project
-   Environment="PATH=/path/to/your/project/venv/bin"
-   ExecStart=/path/to/your/project/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
+   User=root
+   WorkingDirectory=/api_lib/api_postgres_sql
+   Environment="PATH=/api_lib/api_postgres_sql/.venv/bin"
+   ExecStart=/api_lib/api_postgres_sql/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000
 
    [Install]
    WantedBy=multi-user.target
    ```
 
-4. 启动服务：
+2. 启动服务：
    ```bash
    sudo systemctl start postgres-api
    sudo systemctl enable postgres-api
    ```
 
-5. 配置Nginx（可选）：
-   ```bash
-   sudo apt install nginx
-   sudo nano /etc/nginx/sites-available/postgres-api
-   ```
-
-   添加以下内容：
-   ```
-   server {
-       listen 80;
-       server_name your_domain.com;
-
-       location / {
-           proxy_pass http://localhost:8000;
-           proxy_set_header Host $host;
-           proxy_set_header X-Real-IP $remote_addr;
-       }
-   }
-   ```
-
-6. 启用站点：
-   ```bash
-   sudo ln -s /etc/nginx/sites-available/postgres-api /etc/nginx/sites-enabled/
-   sudo nginx -t
-   sudo systemctl restart nginx
-   ``` 
