@@ -9,6 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from urllib.parse import unquote
 import base64
+import json
 
 app = FastAPI(title="PostgreSQL API")
 
@@ -16,7 +17,16 @@ app = FastAPI(title="PostgreSQL API")
 def decrypt_sql(encrypted_sql: str) -> str:
     """解密SQL语句"""
     try:
-        return base64.b64decode(encrypted_sql.encode()).decode()
+        # 解析JSON字符串
+        json_data = json.loads(encrypted_sql)
+        # 获取加密的SQL
+        encrypted_query = json_data.get("URL_encrypted")
+        if not encrypted_query:
+            raise ValueError("Missing URL_encrypted field in JSON")
+            
+        return base64.b64decode(encrypted_query.encode()).decode()
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON format: {str(e)}")
     except Exception as e:
         raise ValueError(f"Invalid base64 encoding: {str(e)}")
 
