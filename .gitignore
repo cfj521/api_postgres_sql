@@ -1,0 +1,5 @@
+# Log files
+*.log
+logs/
+log/
+*log*.txt
