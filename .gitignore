@@ -2,4 +2,5 @@
 *.log
 logs/
 log/
+logs.txt
 log*.txt
