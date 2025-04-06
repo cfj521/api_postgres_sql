@@ -2,4 +2,4 @@
 *.log
 logs/
 log/
-*log*.txt
+log*.txt
